@@ -24,11 +24,11 @@ const RegisterForm = () => {
   } = useForm();
 
   // Google login
-    const googleSignUp = async () => {
-      const data = await authClient.signIn.social({
-        provider: "google",
-      });
-    };
+  const googleSignUp = async () => {
+    const data = await authClient.signIn.social({
+      provider: "google",
+    });
+  };
 
   // REGISTER
   const handleRegister = async (data) => {
@@ -59,7 +59,9 @@ const RegisterForm = () => {
     }
 
     try {
-      const { data: DataRes, error } = await authClient.signUp.email(
+      setLoading(true);
+
+      await authClient.signUp.email(
         {
           name,
           email,
@@ -67,44 +69,41 @@ const RegisterForm = () => {
           password,
         },
         {
-          onRequest: () => {
-            setLoading(true);
-          },
+          onSuccess: async (ctx) => {
+            if (ctx?.data?.token || ctx?.data?.user) {
+              fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/email-send`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ name, email }),
+              }).catch((err) =>
+                console.error("Background email send error:", err),
+              );
 
-          onSuccess: () => {
+              toast.success(
+                "Account created successfully! 🌸 Welcome to Design Vault",
+              );
+            }
+
             setLoading(false);
-
-            toast.success(
-              "Account created successfully! 🌸 Welcome to Design Vault",
-              {
-                position: "top-right",
-                autoClose: 3000,
-              },
-            );
-
             router.push("/");
           },
 
           onError: (ctx) => {
             setLoading(false);
             toast.error(
-              ctx.error.message || "Registration failed. Please try again",
-              {
-                position: "top-right",
-                autoClose: 4000,
-              },
+              ctx?.error?.message || "Registration failed. Please try again",
             );
           },
         },
       );
-      // console.log(DataRes, error, "data");
     } catch (err) {
       setLoading(false);
-      toast.error("Something went wrong", {
-        position: "top-right",
-        autoClose: 4000,
-      });
-      // console.log(err);
+      console.error("Main Catch Error:", err);
+      toast.error(`Error: ${err.message || "Something went wrong"}`);
+    } finally {
+      setLoading(false);
     }
   };
 

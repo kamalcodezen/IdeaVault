@@ -16,7 +16,7 @@ const Navbar = () => {
   const router = useRouter();
 
   const links = [
-    // { label: "Home", path: "/" },
+    { label: "Home", path: "/" },
     { label: "Ideas", path: "/ideas" },
     { label: "Add Idea", path: "/add-idea" },
     { label: "My Ideas", path: "/my-idea" },

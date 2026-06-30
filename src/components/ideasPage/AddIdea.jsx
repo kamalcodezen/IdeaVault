@@ -37,10 +37,9 @@ const AddIdea = () => {
 
     const { data: tokenData } = await authClient.token();
     const token = tokenData?.token;
-    
 
     try {
-      const data = await addUserIdeasData(addIdeaInfo,token);
+      const data = await addUserIdeasData(addIdeaInfo, token);
 
       if (data.acknowledged) {
         toast.success("Idea submitted successfully!");

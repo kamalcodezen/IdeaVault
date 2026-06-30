@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { Home, Search } from "lucide-react";
 
+
+
+
 const GlobalNotFound = () => {
     return (
         <section className="min-h-screen bg-[#1B1416] text-[#FFF4F5] flex items-center justify-center px-6">
